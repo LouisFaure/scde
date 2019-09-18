@@ -1214,7 +1214,7 @@ knn.error.models <- function(counts, groups = NULL, k = round(ncol(counts)/2), m
 
         if(verbose)  message(paste("fitting", group, "models:"))
 
-        ml <- pbapply(seq_along(ids), function(i) { try({
+        ml <- pbmcapply::pbmclapply(seq_along(ids), function(i) { try({
             if(verbose)  message(paste(group, '.', i, " : ", ids[i], sep = ""))
             # determine k closest cells
             oc <- ids[-i][order(celld[ids[i], -i, drop = FALSE], decreasing = TRUE)[1:min(k, length(ids)-1)]]
@@ -1246,7 +1246,7 @@ knn.error.models <- function(counts, groups = NULL, k = round(ncol(counts)/2), m
             #plot.nb2.mixture.fit(m1, df, en = ids[i], do.par = FALSE, compressed.models = TRUE)
             return(m1)
             #})
-        })}, cl = n.cores)
+        })}, mc.cores = n.cores, mc.preschedule=T)
         vic <- which(unlist(lapply(seq_along(ml), function(i) {
             if(class(ml[[i]]) == "try-error") {
                 message("ERROR encountered in building a model for cell ", ids[i], " - skipping the cell. Error:")
