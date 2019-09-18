@@ -1246,7 +1246,7 @@ knn.error.models <- function(counts, groups = NULL, k = round(ncol(counts)/2), m
             #plot.nb2.mixture.fit(m1, df, en = ids[i], do.par = FALSE, compressed.models = TRUE)
             return(m1)
             #})
-        })}, n.cores = n.cores)
+        })}, cl = n.cores)
         vic <- which(unlist(lapply(seq_along(ml), function(i) {
             if(class(ml[[i]]) == "try-error") {
                 message("ERROR encountered in building a model for cell ", ids[i], " - skipping the cell. Error:")
