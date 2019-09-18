@@ -605,7 +605,7 @@ scde.posteriors <- function(models, counts, prior, n.randomizations = 100, batch
 
     chunk <- function(x, n) split(x, sort(rank(x) %% n.cores))
     if(n.cores > 1 && nrow(counts) > n.cores) { # split by genes
-        xl <- papply(chunk(seq_len(nrow(counts)), n.cores), function(ii) {
+        xl <- plapply(chunk(seq_len(nrow(counts)), n.cores), function(ii) {
             ucl <- lapply(seq_len(ncol(counts)), function(i) as.vector(unique(counts[ii, i, drop = FALSE])))
             uci <- do.call(cbind, lapply(seq_len(ncol(counts)), function(i) match(counts[ii, i, drop = FALSE], ucl[[i]])-1))
             #x <- logBootPosterior(models, ucl, uci, marginals, n.randomizations, 1, postflag)
@@ -1214,7 +1214,7 @@ knn.error.models <- function(counts, groups = NULL, k = round(ncol(counts)/2), m
 
         if(verbose)  message(paste("fitting", group, "models:"))
 
-        ml <- papply(seq_along(ids), function(i) { try({
+        ml <- pbapply(seq_along(ids), function(i) { try({
             if(verbose)  message(paste(group, '.', i, " : ", ids[i], sep = ""))
             # determine k closest cells
             oc <- ids[-i][order(celld[ids[i], -i, drop = FALSE], decreasing = TRUE)[1:min(k, length(ids)-1)]]
